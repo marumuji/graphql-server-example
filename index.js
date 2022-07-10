@@ -8,6 +8,7 @@ const typeDefs = gql`
 
   type Query {
     books: [Book]
+    book(author: String!): Book
   }
 `;
 
@@ -25,6 +26,10 @@ const books = [
 const resolvers = {
   Query: {
     books: () => books,
+    book: (parent, args) => {
+      let book = books.find((book) => book.author === args.author);
+      return book;
+    },
   },
 };
 
