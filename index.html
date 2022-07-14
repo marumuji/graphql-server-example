@@ -6,8 +6,45 @@
   </head>
   <body>
     <h1>Fetchを利用したGraphQLへのアクセス</h1>
+    <div id="app">
+      <ul>
+        <li v-for="(book, index) in books" :key="book">
+          {{ book.title }}/{{ book.author }}
+        </li>
+      </ul>
+    </div>
   </body>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
   <script>
+    new Vue({
+      el: "#app",
+      data:{
+        books:[]
+      },
+      methods:{
+        async fetchBooks() {
+          const response = await fetch("http://localhost:4000", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              query: `query{
+                books{
+                  title
+                  author
+                }
+              }`,
+            }),
+          });
+          console.log(response)
+          const { data } = response.json();
+          return data;
+        }
+      },
+      mounted() {
+        this.fetchBooks().then(({books}) => this.books = books);
+      }
+    })
+    /*
     async function fetchBooks() {
       const response = await fetch("http://localhost:4000", {
         method: "POST",
@@ -28,5 +65,6 @@
     }
 
     fetchBooks();
+    */
   </script>
 </html>
